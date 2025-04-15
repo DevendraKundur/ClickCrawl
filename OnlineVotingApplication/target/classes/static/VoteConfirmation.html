@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote Successfully Submitted</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #43cea2, #185a9d);
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .confirmation-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .confirmation-box h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .confirmation-box p {
+            font-size: 16px;
+            color: #333;
+        }
+        .confirmation-box a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .confirmation-box a:hover {
+            background: #0056b3;
+        }
+    </style>
+    <script>
+        setTimeout(function() {
+            window.location.href = "logoutandsuccess.html";
+        }, 3000);
+    </script>
+</head>
+<body>
+
+<div class="confirmation-box">
+    <h1>✅ Thank You!</h1>
+    <p>Your vote has been successfully submitted.</p>
+    <p>Results will be announced at 5:30 PM.</p>
+    <a href="login.html">Logout</a>
+</div>
+
+</body>
+</html>

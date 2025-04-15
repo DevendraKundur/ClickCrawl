@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote Results</title>
+    <style>
+        body { background: #eef2f3; font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        input, button { padding: 10px; margin: 5px; border-radius: 8px; border: 1px solid #ccc; }
+        button { background-color: #007bff; color: white; border: none; }
+        button:hover { background-color: #0056b3; }
+        .result { margin-top: 20px; font-size: 18px; color: green; }
+    </style>
+</head>
+<body>
+<h1>Check Candidate Votes</h1>
+<input type="number" id="candidateId" placeholder="Candidate ID" />
+<button onclick="fetchResults()">Get Vote Count</button>
+<div id="result" class="result"></div>
+
+<script>
+    function fetchResults() {
+        const id = document.getElementById('candidateId').value;
+        fetch(`http://localhost:8080/api/vote/results?candidateId=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                const count = data ? data.length : 0;
+                document.getElementById('result').innerText = `Total Votes: ${count}`;
+            })
+            .catch(err => {
+                document.getElementById('result').innerText = "Error fetching results.";
+            });
+    }
+</script>
+</body>
+</html>

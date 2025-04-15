@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Voting Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #4facfe, #00f2fe);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            color: #333;
+            position: relative;
+        }
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #ff4d4f;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .logout-btn:hover {
+            background: #d9363e;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .candidate-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .candidate {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:disabled {
+            background: gray;
+        }
+    </style>
+</head>
+<body>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<h1>Vote for Your Favorite Candidate</h1>
+<div class="candidate-list" id="candidateList"></div>
+
+<script>
+    if (!sessionStorage.getItem('userLoggedIn')) {
+        window.location.href = "login.html";
+    }
+
+    const voterId = sessionStorage.getItem('voterId');
+
+    fetch("http://localhost:8080/api/user/candidates")
+            .then(response => response.json())
+        .then(candidates => {
+            const container = document.getElementById('candidateList');
+            container.innerHTML = "";
+
+            candidates.forEach(candidate => {  // ✅ Correct variable name
+                const div = document.createElement('div');
+                div.className = 'candidate';
+                div.innerHTML = `
+                <div>${candidate.username}</div>
+                <button onclick="castVote(${candidate.id})">Vote</button>
+            `;
+                container.appendChild(div);
+            });
+        })
+        .catch(() => {
+            alert("Error loading candidates.");
+        });
+
+    function castVote(candidateId) {
+        const now = new Date();
+        const hour = now.getHours();
+
+        if (hour < 8 || hour >= 17) {
+            alert("⚠️ Voting is allowed only between 8:00 AM and 5:00 PM.");
+            return;
+        }
+
+        fetch(`http://localhost:8080/api/vote/cast?voterId=${voterId}&candidateId=${candidateId}`, {
+            method: "POST"
+        })
+            .then(response => response.text())
+            .then(result => {
+                alert(result);
+                if (result.includes("successfully")) {
+                    window.location.href = "voteconfirmation.html";
+                } else {
+                    document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                }
+            });
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>
